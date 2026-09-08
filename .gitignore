@@ -1,0 +1,7 @@
+# This repo tracks ONLY the orchestrator/secretary files so a cloud routine can read them.
+# Everything else (project folders — each its own repo — assets, scratch) is ignored.
+/*
+!/.gitignore
+!/CLAUDE.md
+!/PROJECTS.md
+!/TASKS.md
