@@ -385,8 +385,9 @@ function taskCard(it){
     if(m)badges.push(`<span class="chip ${m.cls}">📅 ${m.txt}</span>`);
     else badges.push(`<span class="chip due">ยังไม่กำหนดวัน</span>`);
   }
-  const tag=(it.title.match(/^\[([^\]]+)\]/)||[])[1];
-  const cleanTitle=it.title.replace(/^\[[^\]]+\]\s*/,"");
+  const t=it.title||"";
+  const tag=(t.match(/^\[([^\]]+)\]/)||[])[1];
+  const cleanTitle=t.replace(/^\[[^\]]+\]\s*/,"");
   if(tag)badges.push(`<span class="chip tag">${esc(tag)}</span>`);
   let subsHtml="";
   if(it.subs&&it.subs.length){

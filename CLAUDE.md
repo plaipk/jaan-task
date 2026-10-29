@@ -21,11 +21,13 @@
 | `note` | โน้ต/สถานะ · `due` | `"YYYY-MM-DD"` หรือ `""` · `top` | `true`=ด่วนที่สุด |
 | `subs` | งานย่อย array ของ `{text, done}` · `done` | `true`=เสร็จ · `createdAt` | ms |
 
-### วิธีทำงานกับ db (ใช้ Artifact tool ทุกครั้ง — ทั้งเปิดจากมือถือหรือ desktop)
-- **อ่าน/ดูงาน:** `action:"read_db"`, `url:<URL>`, `db_op:"list"`, `collection:"items"`
-- **เพิ่มงาน:** `action:"write_db"`, `db_op:"set"`, `collection:"items"`, `doc_id:<สร้างใหม่ไม่ซ้ำ เช่น "t"+เลขเวลา>`, `data:{...}` (ใส่ field ครบ, `done:false`, `createdAt:` เวลาปัจจุบัน ms)
-- **แก้/ติ๊กเสร็จ:** `db_op:"update"` + `doc_id` เดิม + เฉพาะ field ที่เปลี่ยน (เช่น `{done:true}`)
-- **ลบ:** `db_op:"delete"` + `doc_id`
+### วิธีทำงานกับ db (ใช้ tool `ArtifactData` ทุกครั้ง — ทั้งเปิดจากมือถือหรือ desktop · ถ้ายังเป็น deferred ให้โหลดผ่าน ToolSearch ก่อน)
+ทุกคำสั่งใส่ `url:<URL>` + `collection:"items"`
+- **อ่าน/ดูงาน:** `action:"list"`
+- **เพิ่มงาน:** `action:"set"`, `doc_id:<สร้างใหม่ไม่ซ้ำ เช่น "t"+เลขเวลา>`, `data:{...}` (ใส่ field ครบ, `done:false`, `createdAt:` เวลาปัจจุบัน ms)
+- **แก้/ติ๊กเสร็จ:** `action:"update"` + `doc_id` เดิม + `data:` เฉพาะ field ที่เปลี่ยน (เช่น `{done:true}`)
+- **ลบ:** `action:"delete"` + `doc_id`
+- หลายรายการพร้อมกัน → `action:"batch"`
 - แปลงวันสัมพัทธ์ ("ศุกร์นี้", "พรุ่งนี้") เป็นวันที่จริงก่อน (รัน `date`) · ตอบสั้นๆ ยืนยันว่าจดแล้ว
 - **ไม่ต้อง** `git commit/push` เวลาจดงาน (ข้อมูลอยู่ใน db ไม่ใช่ไฟล์) — commit เฉพาะตอนแก้ `app.html`/`CLAUDE.md`/`PROJECTS.md`
 - ถ้า session นี้เห็นแค่ repo `jaan-task` (เปิดจากมือถือ): จด/แก้/ดูงานผ่าน db อย่างเดียว **ห้ามทำงานโปรเจค** (ไม่มีโค้ดให้แตะ)
@@ -33,7 +35,7 @@
 ## เมื่อเริ่ม session ใหม่
 
 1. ทักสั้นๆ ว่า "จารพร้อมทำงานแล้วครับ"
-2. `git pull` ก่อน (app.html/คู่มืออาจถูกแก้) แล้ว **อ่านกระดานงานจาก db** (`read_db` collection `items`) — ถ้ามีงาน `section:"main"` หรือ brief ที่ **เลยกำหนด / ครบวันนี้ / ใกล้ถึง (ภายใน ~3 วัน)** ให้สรุปบอกก่อนเลย (รัน `date` ดูวันนี้ก่อน)
+2. `git pull` ก่อน (app.html/คู่มืออาจถูกแก้) แล้ว **อ่านกระดานงานจาก db** (`ArtifactData` `action:"list"` collection `items`) — ถ้ามีงาน `section:"main"` หรือ brief ที่ **เลยกำหนด / ครบวันนี้ / ใกล้ถึง (ภายใน ~3 วัน)** ให้สรุปบอกก่อนเลย (รัน `date` ดูวันนี้ก่อน)
 3. แล้วค่อยถามว่าจะให้ช่วยอะไร
 4. ไม่ต้องแนะนำตัว/ไล่ TASKS ซ้ำในทุกข้อความถัดไป
 
